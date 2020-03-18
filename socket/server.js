@@ -2,6 +2,7 @@ const io = require('socket.io')();
 var SerialPort = require('serialport');
 var xbee_api = require('xbee-api');
 var C = xbee_api.constants;
+var remotePad = require('./remotePad');
 
 var xbeeAPI = new xbee_api.XBeeAPI({
   api_mode: 2
@@ -58,22 +59,25 @@ xbeeAPI.parser.on("data", function (frame) {
   }
 
   if (C.FRAME_TYPE.NODE_IDENTIFICATION === frame.type) {
-    // let dataReceived = String.fromCharCode.apply(null, frame.nodeIdentifier);
-    // console.log(">> ZIGBEE_RECEIVE_PACKET >", frame);
+     let dataReceived = String.fromCharCode.apply(null, frame.nodeIdentifier);
+    console.log(">> NODE_IDENTIFICATION >", frame);
 
 
   } else if (C.FRAME_TYPE.ZIGBEE_IO_DATA_SAMPLE_RX === frame.type) {
-console.log(frame);
+console.log(">> ZIGBEE_IO_DATA_SAMPLE_RX >", frame);
 
+remotePad.macAddress = frame.remote64;
+
+console.log(remotePad);
 
   } else if (C.FRAME_TYPE.REMOTE_COMMAND_RESPONSE === frame.type) {
-    let dataReceived = String.fromCharCode.apply(null, frame.commandData)
-    console.log(dataReceived);
+    let dataReceived = String.fromCharCode.apply(null, frame.commandData);
+    console.log(">> REMOTE_COMMAND_RESPONSE >", dataReceived);
 
   } else {
-    console.debug(frame);
-    let dataReceived = String.fromCharCode.apply(null, frame.commandData)
-    console.log(dataReceived);
+    console.debug("FRAME :", frame);
+    let dataReceived = String.fromCharCode.apply(null, frame.commandData);
+    console.log(">> dataReceived >",  dataReceived);
   }
 
 });
