@@ -7,24 +7,21 @@ use App\Entity\Player;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class GameFixtures extends Fixture
+class PlayerFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
         // $product = new Product();
         // $manager->persist($product);
-        $this->newLine($manager, "Culture", "10");
-        $this->newLine($manager, "Nerd", "");
-
 
         $manager->flush();
     }
 
-    public function newLine(ObjectManager $manager, string $name, int $maxPlayer)
+    public function newLine(ObjectManager $manager, string $macAddr, Game $game)
     {
-        $game = new Game();
-        $game->setName($name);
-        $game->setMaxPlayer($maxPlayer);
-        $manager->persist($game);
+        $player = new Player();
+        $player->setMacAddress($macAddr);
+        $player->setGame($game);
+        $manager->persist($player);
     }
 }
